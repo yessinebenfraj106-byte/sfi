@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, Users, QrCode, Settings, LogOut, Lock } from "lucide-react";
+import { LayoutDashboard, Users, QrCode, Settings, LogOut, Lock, Megaphone } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,7 +11,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mot de passe admin temporaire (à changer plus tard)
     if (password === "sfi2026") {
       setIsAuthenticated(true);
       setError(false);
@@ -21,7 +20,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
-  // Écran de verrouillage si non authentifié
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center font-sans selection:bg-red-600">
@@ -34,13 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <p className="text-zinc-500 text-xs tracking-widest uppercase mt-2">Centre de Contrôle SFI</p>
           </div>
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <input 
-              type="password" 
-              placeholder="Mot de passe Admin" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full bg-black border ${error ? 'border-red-500' : 'border-zinc-800'} rounded p-3 text-white focus:outline-none focus:border-red-500 text-center tracking-widest`}
-            />
+            <input type="password" placeholder="Mot de passe Admin" value={password} onChange={(e) => setPassword(e.target.value)} className={`w-full bg-black border ${error ? 'border-red-500' : 'border-zinc-800'} rounded p-3 text-white focus:outline-none focus:border-red-500 text-center tracking-widest`} />
             {error && <p className="text-red-500 text-xs text-center font-bold">Mot de passe incorrect</p>}
             <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest p-3 rounded transition-all">
               Déverrouiller
@@ -51,7 +43,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // L'interface Admin si le mot de passe est bon
   return (
     <div className="min-h-screen bg-black text-white flex font-sans selection:bg-red-600">
       <aside className="w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col hidden md:flex fixed h-full z-10">
@@ -68,7 +59,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Users size={18} /> <span className="text-sm font-bold uppercase tracking-widest">Participants</span>
           </Link>
           <Link href="/admin/scanner" className="flex items-center gap-3 p-3 rounded text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">
-            <QrCode size={18} /> <span className="text-sm font-bold uppercase tracking-widest">Scanner E-Badge</span>
+            <QrCode size={18} /> <span className="text-sm font-bold uppercase tracking-widest">Scanner</span>
+          </Link>
+          <Link href="/admin/announcements" className="flex items-center gap-3 p-3 rounded text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">
+            <Megaphone size={18} /> <span className="text-sm font-bold uppercase tracking-widest">Annonces</span>
           </Link>
           <Link href="/admin/settings" className="flex items-center gap-3 p-3 rounded text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">
             <Settings size={18} /> <span className="text-sm font-bold uppercase tracking-widest">Paramètres</span>
