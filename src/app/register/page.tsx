@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+
 export default function Register() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -37,32 +38,38 @@ export default function Register() {
 
       if (authError) throw authError;
 
-      if (authData.user) {
-        // 2. Insert the extra details into your 'profiles' table
-        const { error: dbError } = await supabase.from('profiles').insert([
-          {
-            id: authData.user.id,
-            full_name: fullName,
-            club: club,
-            role_title: roleTitle,
-            phone: phone, // <-- Sending phone number to database
-            email: email,
-            agreed_to_rules: agreed,
-            status: 'En attente de documents',
-            priority_tier: 'Priorité 3 (Membre)' 
-          }
-        ]);
+      // If sign up is successful, grab the user ID
+      const userId = authData.user?.id || authData.session?.user?.id;
 
-        if (dbError) throw dbError;
-
-        toast.success("Compte créé avec succès ! Redirection...");
-        
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+      if (!userId) {
+        throw new Error("L'authentification a réussi mais l'ID utilisateur est introuvable.");
       }
+
+      // 2. Insert the extra details into your 'profiles' table
+      const { error: dbError } = await supabase.from('profiles').insert([
+        {
+          id: userId,
+          full_name: fullName,
+          club: club,
+          role_title: roleTitle,
+          phone: phone,
+          email: email,
+          agreed_to_rules: agreed,
+          status: 'En attente de documents',
+          priority_tier: 'Priorité 3 (Membre)' 
+        }
+      ]);
+
+      if (dbError) throw dbError;
+
+      toast.success("Compte créé avec succès ! Redirection...");
+      
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+
     } catch (error: any) {
-      console.error(error);
+      console.error("Erreur détaillée Supabase:", error);
       toast.error(error.message || "Une erreur est survenue lors de l'inscription.");
     } finally {
       setLoading(false);
