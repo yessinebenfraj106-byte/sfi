@@ -15,6 +15,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState(""); // <-- Added Phone State
   const [club, setClub] = useState("");
   const [roleTitle, setRoleTitle] = useState("");
 
@@ -45,10 +46,11 @@ export default function Register() {
             full_name: fullName,
             club: club,
             role_title: roleTitle,
+            phone: phone, // <-- Sending phone number to database
             email: email,
             agreed_to_rules: agreed,
             status: 'En attente de documents',
-            priority_tier: 'Priorité 3 (Membre)' // Default tier, admin updates later
+            priority_tier: 'Priorité 3 (Membre)' 
           }
         ]);
 
@@ -56,7 +58,6 @@ export default function Register() {
 
         toast.success("Compte créé avec succès ! Redirection...");
         
-        // Redirect to the login page or dashboard
         setTimeout(() => {
           router.push("/login");
         }, 2000);
@@ -112,14 +113,26 @@ export default function Register() {
           <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800/50">
             <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4">Informations Personnelles</h3>
             <div className="flex flex-col gap-5">
-              <input 
-                type="text" 
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Nom et Prénom *" 
-                required 
-                className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
-              />
+              
+              {/* Added Phone Input next to Full Name */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <input 
+                  type="text" 
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Nom et Prénom *" 
+                  required 
+                  className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+                />
+                <input 
+                  type="tel" 
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Numéro de Téléphone *" 
+                  required 
+                  className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+                />
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <input 
@@ -145,7 +158,6 @@ export default function Register() {
           {/* Terms and Conditions Box */}
           <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800/50">
             <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4">Règlement et Engagement</h3>
-            
             <div className="h-48 overflow-y-auto bg-black border border-zinc-800 rounded p-4 text-sm text-zinc-400 mb-4 space-y-4 custom-scrollbar">
               <p><strong className="text-white">Article 1 : Participation et Assiduité</strong><br/>Le participant s’engage à assister et à prendre part activement à l’ensemble des ateliers, conférences et activités programmés lors du Séminaire de Formation (SFI) les 20 et 21 Décembre 2026. Le respect des horaires, la ponctualité aux rassemblements et la présence à toutes les séances sont obligatoires.</p>
               <p><strong className="text-white">Article 2 : Respect des Lieux, des Équipements et du Matériel</strong><br/>Les participants ainsi que les encadrants s'engagent à préserver l’état général des infrastructures d’accueil. Tout acte de dégradation volontaire, vandalisme ou non-respect des installations engage la responsabilité financière directe du participant et de ses représentants légaux pour remise en état immédiate.</p>
