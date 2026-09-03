@@ -1,6 +1,6 @@
 "use client";
 
-import { Save } from "lucide-react";
+import { Save, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -10,80 +10,120 @@ export default function AdminSettings() {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    toast.success("Paramètres mis à jour avec succès !");
+    toast.success("Paramètres globaux sauvegardés avec succès !");
     setTimeout(() => setLoading(false), 1000);
   };
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-8 max-w-6xl">
       <header className="mb-8 flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black uppercase tracking-tighter">Paramètres Globaux</h1>
-          <p className="text-zinc-400 text-sm mt-1 tracking-widest uppercase">Configuration Financière et Logistique</p>
+          <h1 className="text-3xl font-black uppercase tracking-tighter">Configuration Globale</h1>
+          <p className="text-zinc-400 text-sm mt-1 tracking-widest uppercase">Tarifs, Bus, Quotas et Logique d'Attente</p>
         </div>
-        <button 
-          onClick={handleSave}
-          disabled={loading}
-          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50"
-        >
-          <Save size={18} /> {loading ? "Sauvegarde..." : "Sauvegarder"}
+        <button onClick={handleSave} disabled={loading} className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded font-black uppercase tracking-widest transition-all active:scale-95">
+          <Save size={18} /> {loading ? "Sauvegarde..." : "Enregistrer tout"}
         </button>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        {/* Section Tarification */}
-        <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-6 border-b border-zinc-800 pb-2">Tarification Dynamique</h2>
+        {/* Contrôle Financier & Bus */}
+        <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-lg space-y-8">
           
-          <div className="space-y-5">
-            <div>
-              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Frais de Participation de Base (TND)</label>
-              <input type="number" defaultValue={50} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
+          <div>
+            <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 border-b border-zinc-800 pb-2">Tarification (TND)</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Prix SFI (Sans Bus)</label>
+                <input type="number" defaultValue={50} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Prix SFI + Bus</label>
+                <input type="number" defaultValue={70} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none" />
+              </div>
             </div>
-            
-            <div>
-              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Frais Supplémentaires Bus (TND)</label>
-              <input type="number" defaultValue={20} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
+          </div>
+
+          <div>
+            <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 border-b border-zinc-800 pb-2">Logistique des Bus</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Nombre de Bus</label>
+                <input type="number" defaultValue={2} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Capacité par Bus</label>
+                <input type="number" defaultValue={50} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none" />
+              </div>
             </div>
-            
-            <div className="pt-4 border-t border-zinc-800/50">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" defaultChecked className="w-5 h-5 accent-red-600 bg-black border-zinc-700 rounded cursor-pointer" />
-                <span className="text-sm font-semibold text-zinc-300">Activer les inscriptions (Ouvrir le site)</span>
-              </label>
-            </div>
+            <p className="text-xs text-zinc-500 mt-2">Capacité totale calculée : 100 places.</p>
+          </div>
+
+          <div>
+            <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 border-b border-zinc-800 pb-2">Système de la Plateforme</h2>
+            <label className="flex items-center justify-between p-3 bg-black border border-zinc-800 rounded cursor-pointer">
+              <span className="text-sm font-semibold text-zinc-300">Ouvrir les Inscriptions au public</span>
+              <input type="checkbox" defaultChecked className="w-5 h-5 accent-red-600 bg-zinc-900 border-zinc-700 rounded" />
+            </label>
+            <label className="flex items-center justify-between p-3 bg-black border border-zinc-800 rounded cursor-pointer mt-3">
+              <span className="text-sm font-semibold text-zinc-300">Activer l'Espace Communauté (Fil d'actualité)</span>
+              <input type="checkbox" defaultChecked className="w-5 h-5 accent-red-600 bg-zinc-900 border-zinc-700 rounded" />
+            </label>
           </div>
         </div>
 
-        {/* Section Apprentissage des Postes */}
-        <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-6 border-b border-zinc-800 pb-2">Catégorisation des Postes</h2>
-          <p className="text-xs text-zinc-500 mb-4 leading-relaxed">
-            Le système détecte les nouveaux postes saisis par les membres. Associez-les ici pour automatiser la priorité de la liste d'attente.
-          </p>
+        {/* Quotas & Intelligence de la file d'attente */}
+        <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-lg space-y-8">
           
-          <div className="space-y-3">
-            <div className="flex items-center justify-between bg-black border border-zinc-800 p-3 rounded">
-              <span className="text-sm font-bold uppercase tracking-widest text-white">Secrétaire Général</span>
-              <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-1 focus:outline-none">
-                <option>Bureau Exécutif (Priorité 1)</option>
-                <option>Bureau Élargi (Priorité 2)</option>
-                <option>Membre (Priorité 3)</option>
-              </select>
+          <div>
+            <div className="flex justify-between items-end mb-4 border-b border-zinc-800 pb-2">
+              <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm">Gestion des Quotas (Par Club)</h2>
+              <button className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 uppercase tracking-widest"><Plus size={14}/> Ajouter</button>
             </div>
-            
-            <div className="flex items-center justify-between bg-black border border-zinc-800 p-3 rounded">
-              <span className="text-sm font-bold uppercase tracking-widest text-white">Chef de Projet</span>
-              <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-1 focus:outline-none">
-                <option>Bureau Élargi (Priorité 2)</option>
-                <option>Bureau Exécutif (Priorité 1)</option>
-                <option>Membre (Priorité 3)</option>
-              </select>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <input type="text" defaultValue="Interact Tunis Golfe Carthagène" className="flex-1 bg-black border border-zinc-800 rounded p-2 text-xs text-white" />
+                <input type="number" defaultValue={25} className="w-20 bg-black border border-zinc-800 rounded p-2 text-xs text-center text-white" />
+                <button className="text-zinc-600 hover:text-red-500"><Trash2 size={16} /></button>
+              </div>
+              <div className="flex items-center gap-3">
+                <input type="text" placeholder="Nom du Club" className="flex-1 bg-black border border-zinc-800 rounded p-2 text-xs text-white" />
+                <input type="number" placeholder="Quota" className="w-20 bg-black border border-zinc-800 rounded p-2 text-xs text-center text-white" />
+                <button className="text-zinc-600 hover:text-red-500"><Trash2 size={16} /></button>
+              </div>
             </div>
           </div>
-        </div>
 
+          <div>
+            <div className="flex justify-between items-end mb-4 border-b border-zinc-800 pb-2">
+              <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm">Catégorisation Dynamique des Postes</h2>
+              <button className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 uppercase tracking-widest"><Plus size={14}/> Ajouter</button>
+            </div>
+            <p className="text-xs text-zinc-500 mb-4 leading-relaxed">
+              Définissez l'ordre de priorité pour la Liste d'Attente Intelligente. Le système triera d'abord par Priorité, puis par heure d'inscription.
+            </p>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center bg-black border border-zinc-800 p-2 rounded">
+                <input type="text" defaultValue="Président" className="bg-transparent border-none focus:outline-none text-xs text-white font-bold uppercase tracking-widest w-1/2" />
+                <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-1 focus:outline-none">
+                  <option>Priorité 1 (Bureau Exécutif)</option>
+                  <option>Priorité 2 (Bureau Élargi)</option>
+                  <option>Priorité 3 (Membre / Recrue)</option>
+                </select>
+              </div>
+              <div className="flex justify-between items-center bg-black border border-zinc-800 p-2 rounded">
+                <input type="text" defaultValue="Directeur Action" className="bg-transparent border-none focus:outline-none text-xs text-white font-bold uppercase tracking-widest w-1/2" />
+                <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-1 focus:outline-none">
+                  <option>Priorité 2 (Bureau Élargi)</option>
+                  <option>Priorité 1 (Bureau Exécutif)</option>
+                  <option>Priorité 3 (Membre / Recrue)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
