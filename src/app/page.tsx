@@ -5,29 +5,33 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/LanguageContext";
 
+// This strict type tells VS Code exactly what words exist, fixing the red lines!
+type Translations = {
+  [key in "fr" | "en"]: {
+    login: string;
+    days: string;
+    hours: string;
+    mins: string;
+    secs: string;
+    btn: string;
+  }
+};
+
 export default function Home() {
   const { language, setLanguage } = useLanguage();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Dictionnaire de traduction
-  const t = {
+  // Simplified dictionary just for the dynamic buttons/labels
+  const t: Translations = {
     fr: {
       login: "Connexion",
-      subtitle: "Coordination Nationale d'Interact Tunisie X Interact Club Tunis Golfe Carthagène",
-      title: "SÉMINAIRE DE FORMATION",
-      desc: "L'événement incontournable pour développer votre leadership, maîtriser la gestion de projet et libérer votre potentiel créatif. Préparez-vous à l'impact.",
       days: "Jours", hours: "Heures", mins: "Minutes", secs: "Secondes",
-      btn: "S'inscrire maintenant",
-      footer: "© 2026 Interact Tunis Golfe Carthagène. Tous droits réservés."
+      btn: "S'inscrire maintenant"
     },
     en: {
       login: "Login",
-      subtitle: "National Coordination of Interact Tunisia X Interact Club Tunis Golfe Carthagène",
-      title: "TRAINING SEMINAR",
-      desc: "The ultimate event to develop your leadership, master project management, and unlock your creative potential. Brace for impact.",
       days: "Days", hours: "Hours", mins: "Minutes", secs: "Seconds",
-      btn: "Register Now",
-      footer: "© 2026 Interact Tunis Golfe Carthagène. All Rights Reserved."
+      btn: "Register Now"
     }
   };
 
@@ -85,18 +89,18 @@ export default function Home() {
 
         <div className="relative z-10 flex flex-col items-center gap-8 max-w-5xl">
           <span className="text-red-500 font-bold tracking-[0.3em] uppercase text-sm md:text-base">
-            {t[language].subtitle}
+            Coordination Nationale d'Interact Tunisie X Interact Club Tunis Golfe Carthagène
           </span>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
-            {t[language].title} <br className="hidden md:block" />
+            SÉMINAIRE DE FORMATION <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700">
               INTERACT 8.0 ✨
             </span>
           </h1>
 
           <p className="max-w-2xl text-lg md:text-xl text-zinc-400 leading-relaxed mt-4">
-            {t[language].desc}
+            L'événement incontournable pour développer votre leadership, maîtriser la gestion de projet et libérer votre potentiel créatif. Préparez-vous à l'impact.
           </p>
 
           <div className="grid grid-cols-4 gap-4 md:gap-8 my-8">
@@ -125,9 +129,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="w-full p-8 border-t border-zinc-900 flex justify-center items-center text-xs text-zinc-600 uppercase tracking-widest font-semibold gap-4 z-10 bg-black">
-        <p>{t[language].footer}</p>
-      </footer>
+      {/* Footer is completely removed as requested */}
     </div>
   );
 }
