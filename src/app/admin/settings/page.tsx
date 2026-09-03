@@ -7,10 +7,12 @@ import { useState } from "react";
 export default function AdminSettings() {
   const [loading, setLoading] = useState(false);
   
-  // Dynamic States for Lists
-  const [buses, setBuses] = useState([{ id: 1, name: "Bus A (Tunis)", capacity: 50 }]);
+  // États dynamiques
+  const [buses, setBuses] = useState([
+    { id: 1, name: "Bus A (Grand Tunis)", capacity: 50 },
+    { id: 2, name: "Bus B (Ligne Nord)", capacity: 30 }
+  ]);
   const [roles, setRoles] = useState([{ id: 1, name: "Président", priority: "1" }]);
-  const [quotas, setQuotas] = useState([{ id: 1, club: "Interact Tunis Golfe Carthagène", limit: 25 }]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,10 +21,17 @@ export default function AdminSettings() {
     setTimeout(() => setLoading(false), 1000);
   };
 
-  // Helper functions to add/remove items
+  // Logique des Bus
   const addBus = () => setBuses([...buses, { id: Date.now(), name: "", capacity: 50 }]);
   const removeBus = (id: number) => setBuses(buses.filter(b => b.id !== id));
+  const updateBus = (id: number, field: string, value: string | number) => {
+    setBuses(buses.map(bus => bus.id === id ? { ...bus, [field]: value } : bus));
+  };
   
+  // Calcul automatique de la capacité totale
+  const totalBusCapacity = buses.reduce((acc, bus) => acc + (Number(bus.capacity) || 0), 0);
+
+  // Logique des Rôles
   const addRole = () => setRoles([...roles, { id: Date.now(), name: "", priority: "3" }]);
   const removeRole = (id: number) => setRoles(roles.filter(r => r.id !== id));
 
@@ -64,11 +73,27 @@ export default function AdminSettings() {
             <div className="space-y-3">
               {buses.map((bus) => (
                 <div key={bus.id} className="flex items-center gap-3 bg-black border border-zinc-800 p-2 rounded">
-                  <input type="text" placeholder="Nom du Bus (ex: Bus A)" defaultValue={bus.name} className="flex-1 bg-transparent border-none text-xs text-white focus:outline-none" />
-                  <input type="number" placeholder="Capacité" defaultValue={bus.capacity} className="w-20 bg-zinc-900 border border-zinc-700 rounded p-1 text-xs text-center text-white focus:outline-none" />
+                  <input 
+                    type="text" 
+                    placeholder="Nom du Bus (ex: Ligne Nord)" 
+                    value={bus.name} 
+                    onChange={(e) => updateBus(bus.id, 'name', e.target.value)}
+                    className="flex-1 bg-transparent border-none text-xs text-white focus:outline-none" 
+                  />
+                  <input 
+                    type="number" 
+                    placeholder="Capacité" 
+                    value={bus.capacity} 
+                    onChange={(e) => updateBus(bus.id, 'capacity', parseInt(e.target.value) || 0)}
+                    className="w-20 bg-zinc-900 border border-zinc-700 rounded p-1 text-xs text-center text-white focus:outline-none" 
+                  />
                   <button onClick={() => removeBus(bus.id)} className="text-zinc-600 hover:text-red-500 p-1"><Trash2 size={16} /></button>
                 </div>
               ))}
+            </div>
+            <div className="mt-4 p-3 bg-red-950/20 border border-red-900/30 rounded flex justify-between items-center">
+              <span className="text-xs font-bold uppercase tracking-widest text-red-500">Capacité totale de la flotte :</span>
+              <span className="text-lg font-black text-white">{totalBusCapacity} places</span>
             </div>
           </div>
         </div>
@@ -76,16 +101,12 @@ export default function AdminSettings() {
         {/* Quotas & Intelligence de la file d'attente */}
         <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-lg space-y-8">
           <div>
-            <div className="flex justify-between items-end mb-4 border-b border-zinc-800 pb-2">
-              <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm">Quotas Universels</h2>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Limite par défaut (Tous les clubs)</label>
-              <input type="number" defaultValue={25} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none mb-2" />
-              <p className="text-xs text-zinc-500 leading-relaxed">
-                Si un club dépasse ce quota, une validation d'exception sera requise lors de l'approbation du membre.
-              </p>
-            </div>
+            <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 border-b border-zinc-800 pb-2">Quotas Universels</h2>
+            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Limite par défaut (Tous les clubs)</label>
+            <input type="number" defaultValue={25} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none mb-2" />
+            <p className="text-xs text-zinc-500 leading-relaxed">
+              Si un club dépasse ce quota, une validation d'exception sera requise lors de l'approbation du membre.
+            </p>
           </div>
 
           <div>

@@ -9,12 +9,17 @@ export default function AdminUsers() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<"doc" | "money" | null>(null);
 
+  // Simulation de la liste dynamique des bus configurés dans les paramètres
+  const [availableBuses] = useState([
+    { id: "bus_1", name: "Bus A (Grand Tunis)", capacity: 50 },
+    { id: "bus_2", name: "Bus B (Ligne Nord)", capacity: 30 }
+  ]);
+
   const handleExportPDF = () => {
     toast.success("Génération des attestations PDF en cours...");
   };
 
   const initiateVerification = (type: "doc" | "money") => {
-    // Simulated quota check
     const isOverLimit = true; 
     
     if (isOverLimit && type === "money") {
@@ -107,8 +112,12 @@ export default function AdminUsers() {
               <td className="px-6 py-4">
                 <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-2 focus:outline-none w-full max-w-[150px]">
                   <option value="">Non assigné</option>
-                  <option value="bus_a">Bus A (Tunis)</option>
-                  <option value="bus_b">Bus B (Bizerte)</option>
+                  {/* Génération dynamique de la liste des bus */}
+                  {availableBuses.map((bus) => (
+                    <option key={bus.id} value={bus.id}>
+                      {bus.name} ({bus.capacity} places)
+                    </option>
+                  ))}
                 </select>
               </td>
               <td className="px-6 py-4 text-right flex justify-end gap-3">
