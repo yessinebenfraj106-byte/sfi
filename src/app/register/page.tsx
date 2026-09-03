@@ -3,10 +3,20 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Register() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
+
+  // Form States
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [club, setClub] = useState("");
+  const [roleTitle, setRoleTitle] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,12 +27,46 @@ export default function Register() {
     
     setLoading(true);
     toast.info("Création de votre profil en cours...");
-    
-    // Database connection will go here
-    
-    setTimeout(() => {
+
+    try {
+      // 1. Create the user in Supabase Authentication
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      if (authData.user) {
+        // 2. Insert the extra details into your 'profiles' table
+        const { error: dbError } = await supabase.from('profiles').insert([
+          {
+            id: authData.user.id,
+            full_name: fullName,
+            club: club,
+            role_title: roleTitle,
+            email: email,
+            agreed_to_rules: agreed,
+            status: 'En attente de documents',
+            priority_tier: 'Priorité 3 (Membre)' // Default tier, admin updates later
+          }
+        ]);
+
+        if (dbError) throw dbError;
+
+        toast.success("Compte créé avec succès ! Redirection...");
+        
+        // Redirect to the login page or dashboard
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Une erreur est survenue lors de l'inscription.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -46,19 +90,54 @@ export default function Register() {
           <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800/50">
             <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4">Identifiants de connexion</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <input type="email" placeholder="Adresse Mail *" required className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
-              <input type="password" placeholder="Mot de passe *" required className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Adresse Mail *" 
+                required 
+                className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+              />
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Mot de passe *" 
+                required 
+                className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+              />
             </div>
           </div>
 
           <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800/50">
             <h3 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4">Informations Personnelles</h3>
             <div className="flex flex-col gap-5">
-              <input type="text" placeholder="Nom et Prénom *" required className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
+              <input 
+                type="text" 
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Nom et Prénom *" 
+                required 
+                className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+              />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <input type="text" placeholder="Club Interact *" required className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
-                <input type="text" placeholder="Poste (Ex: Président, Membre) *" required className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" />
+                <input 
+                  type="text" 
+                  value={club}
+                  onChange={(e) => setClub(e.target.value)}
+                  placeholder="Club Interact *" 
+                  required 
+                  className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+                />
+                <input 
+                  type="text" 
+                  value={roleTitle}
+                  onChange={(e) => setRoleTitle(e.target.value)}
+                  placeholder="Poste (Ex: Président, Membre) *" 
+                  required 
+                  className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:outline-none focus:border-red-500 transition-colors" 
+                />
               </div>
             </div>
           </div>
@@ -69,19 +148,12 @@ export default function Register() {
             
             <div className="h-48 overflow-y-auto bg-black border border-zinc-800 rounded p-4 text-sm text-zinc-400 mb-4 space-y-4 custom-scrollbar">
               <p><strong className="text-white">Article 1 : Participation et Assiduité</strong><br/>Le participant s’engage à assister et à prendre part activement à l’ensemble des ateliers, conférences et activités programmés lors du Séminaire de Formation (SFI) les 20 et 21 Décembre 2026. Le respect des horaires, la ponctualité aux rassemblements et la présence à toutes les séances sont obligatoires.</p>
-              
               <p><strong className="text-white">Article 2 : Respect des Lieux, des Équipements et du Matériel</strong><br/>Les participants ainsi que les encadrants s'engagent à préserver l’état général des infrastructures d’accueil. Tout acte de dégradation volontaire, vandalisme ou non-respect des installations engage la responsabilité financière directe du participant et de ses représentants légaux pour remise en état immédiate.</p>
-              
               <p><strong className="text-white">Article 3 : Comportement, Sécurité et Valeurs Rotariennes</strong><br/>Les participants sont tenus de maintenir une conduite exemplaire, respectueuse d'autrui et conforme aux valeurs de camaraderie, d'éthique et de civisme de l'Interact. Sont formellement prohibés : l'usage ou la détention de substances illicites, de tabac/vape, d'alcool, ainsi que tout acte de violence verbale ou physique. Tout manquement grave entraînera l'exclusion immédiate du séminaire, sans remboursement.</p>
-              
               <h4 className="text-white font-bold mt-6">III. RÈGLEMENT ET CONDITIONS SPÉCIFIQUES DU TRANSPORT EN BUS</h4>
-              
               <p><strong className="text-white">Article 4 : Ponctualité aux Points de Départ et de Retour</strong><br/>Le transport aller-retour est assuré par un service d'autocar affrété par l'organisation. Le participant doit impérativement respecter les heures et lieux de rendez-vous fixés par le comité d'organisation. Aucun retard ne sera toléré afin de ne pas compromettre le déroulement du programme.</p>
-              
               <p><strong className="text-white">Article 5 : Sécurité et Discipline à Bord</strong><br/>Il est formellement interdit de rester debout, de circuler dans les allées sans nécessité impérieuse ou de distraire le chauffeur. Chaque participant doit veiller à la propreté de sa place, remporter ses déchets et respecter le matériel du transporteur.</p>
-              
               <h4 className="text-white font-bold mt-6">IV. PROTOCOLE MÉDICAL, URGENCE ET DÉCHARGE</h4>
-              
               <p><strong className="text-white">Article 6 : Prise en Charge Médicale et Hospitalisation d'Urgence</strong><br/>Le représentant légal autorise expressément l'équipe encadrante et les responsables de l'Interact Club Tunis Golfe Carthagène à prendre toute mesure d'urgence requise pour préserver la santé du participant (premiers secours, appel des services d'urgence, transport médicalisé ou privé vers l'établissement hospitalier ou la clinique la plus proche sur le territoire tunisien, ainsi que toute intervention médicale ou chirurgicale jugée urgente par le corps médical).</p>
             </div>
 
