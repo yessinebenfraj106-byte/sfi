@@ -4,8 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-
+import { supabase } from "@/lib/supabaseClient";
 export default function Register() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
