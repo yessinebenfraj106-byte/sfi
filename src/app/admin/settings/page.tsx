@@ -1,6 +1,6 @@
 "use client";
 
-import { Save, Plus, Trash2 } from "lucide-react";
+import { Save, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -30,7 +30,6 @@ export default function AdminSettings() {
         
         {/* Contrôle Financier & Bus */}
         <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-lg space-y-8">
-          
           <div>
             <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 border-b border-zinc-800 pb-2">Tarification (TND)</h2>
             <div className="grid grid-cols-2 gap-4">
@@ -59,18 +58,6 @@ export default function AdminSettings() {
             </div>
             <p className="text-xs text-zinc-500 mt-2">Capacité totale calculée : 100 places.</p>
           </div>
-
-          <div>
-            <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 border-b border-zinc-800 pb-2">Système de la Plateforme</h2>
-            <label className="flex items-center justify-between p-3 bg-black border border-zinc-800 rounded cursor-pointer">
-              <span className="text-sm font-semibold text-zinc-300">Ouvrir les Inscriptions au public</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5 accent-red-600 bg-zinc-900 border-zinc-700 rounded" />
-            </label>
-            <label className="flex items-center justify-between p-3 bg-black border border-zinc-800 rounded cursor-pointer mt-3">
-              <span className="text-sm font-semibold text-zinc-300">Activer l'Espace Communauté (Fil d'actualité)</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5 accent-red-600 bg-zinc-900 border-zinc-700 rounded" />
-            </label>
-          </div>
         </div>
 
         {/* Quotas & Intelligence de la file d'attente */}
@@ -78,20 +65,16 @@ export default function AdminSettings() {
           
           <div>
             <div className="flex justify-between items-end mb-4 border-b border-zinc-800 pb-2">
-              <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm">Gestion des Quotas (Par Club)</h2>
-              <button className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 uppercase tracking-widest"><Plus size={14}/> Ajouter</button>
+              <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm">Quotas Universels</h2>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <input type="text" defaultValue="Interact Tunis Golfe Carthagène" className="flex-1 bg-black border border-zinc-800 rounded p-2 text-xs text-white" />
-                <input type="number" defaultValue={25} className="w-20 bg-black border border-zinc-800 rounded p-2 text-xs text-center text-white" />
-                <button className="text-zinc-600 hover:text-red-500"><Trash2 size={16} /></button>
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">Limite de places par club</label>
+                <input type="number" defaultValue={25} className="w-full bg-black border border-zinc-800 rounded p-3 text-white focus:border-red-500 focus:outline-none" />
               </div>
-              <div className="flex items-center gap-3">
-                <input type="text" placeholder="Nom du Club" className="flex-1 bg-black border border-zinc-800 rounded p-2 text-xs text-white" />
-                <input type="number" placeholder="Quota" className="w-20 bg-black border border-zinc-800 rounded p-2 text-xs text-center text-white" />
-                <button className="text-zinc-600 hover:text-red-500"><Trash2 size={16} /></button>
-              </div>
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                Ce quota s'applique uniformément à tous les clubs Interact. Si vous validez manuellement un membre d'un club ayant déjà atteint cette limite, le système vous demandera une confirmation d'exception.
+              </p>
             </div>
           </div>
 
@@ -100,23 +83,12 @@ export default function AdminSettings() {
               <h2 className="text-red-500 font-bold uppercase tracking-widest text-sm">Catégorisation Dynamique des Postes</h2>
               <button className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 uppercase tracking-widest"><Plus size={14}/> Ajouter</button>
             </div>
-            <p className="text-xs text-zinc-500 mb-4 leading-relaxed">
-              Définissez l'ordre de priorité pour la Liste d'Attente Intelligente. Le système triera d'abord par Priorité, puis par heure d'inscription.
-            </p>
             <div className="space-y-3">
               <div className="flex justify-between items-center bg-black border border-zinc-800 p-2 rounded">
                 <input type="text" defaultValue="Président" className="bg-transparent border-none focus:outline-none text-xs text-white font-bold uppercase tracking-widest w-1/2" />
                 <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-1 focus:outline-none">
                   <option>Priorité 1 (Bureau Exécutif)</option>
                   <option>Priorité 2 (Bureau Élargi)</option>
-                  <option>Priorité 3 (Membre / Recrue)</option>
-                </select>
-              </div>
-              <div className="flex justify-between items-center bg-black border border-zinc-800 p-2 rounded">
-                <input type="text" defaultValue="Directeur Action" className="bg-transparent border-none focus:outline-none text-xs text-white font-bold uppercase tracking-widest w-1/2" />
-                <select className="bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 rounded p-1 focus:outline-none">
-                  <option>Priorité 2 (Bureau Élargi)</option>
-                  <option>Priorité 1 (Bureau Exécutif)</option>
                   <option>Priorité 3 (Membre / Recrue)</option>
                 </select>
               </div>
