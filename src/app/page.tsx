@@ -39,9 +39,6 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white font-sans selection:bg-red-600 selection:text-white flex flex-col">
       {/* Marvel-style Header */}
       <header className="w-full p-6 border-b border-zinc-800 flex justify-between items-center bg-black/90 backdrop-blur-md fixed top-0 z-50">
-        <div className="bg-red-600 text-white font-black tracking-tighter text-2xl px-2 py-1 uppercase">
-          Interact
-        </div>
         <nav>
           <button className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
             Login
@@ -56,7 +53,7 @@ export default function Home() {
 
         <div className="relative z-10 flex flex-col items-center gap-8 max-w-5xl">
           <span className="text-red-500 font-bold tracking-[0.3em] uppercase text-sm md:text-base">
-            Coordination Nationale d'Interact Tunisie
+            Coordination Nationale d'Interact Tunisie X Interact Club Tunis Golfe Carthagène
           </span>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
